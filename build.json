@@ -1,0 +1,11 @@
+{
+    "$schema": "https://raw.githubusercontent.com/xfitgd/Odin-GameEngine/master/build_tool.schema.json",
+    "setting" : {
+        "is-android" : false,
+        "main-package" : "resource_packer",
+        "out-path" : "bin/resource_packer",
+        "build-type" : "speed",
+        "log" : false,
+        "is-console" : true
+    }
+}

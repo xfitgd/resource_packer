@@ -1,7 +1,5 @@
 *.bin
 *.log
 bin/
-android-bin/
 lib/
-android/assets
 *.res

@@ -6,21 +6,7 @@
         {
             "label": "build odin",
             "type": "shell",
-            "command": "build_tool",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true,
-            },
-            "presentation": {
-                "reveal": "always",
-                "close": false,
-            },
-        },
-        {
-            "label": "install apk",
-            "type": "shell",
-            "command": "adb install -r --no-incremental bin/test.apk",
+            "command": "odin build resource_packer -o:speed",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

@@ -12,7 +12,6 @@ import "core:math/rand"
 import "core:math/linalg"
 import "core:reflect"
 import "core:os/os2"
-import "vendor:engine"
 import "core:debug/trace"
 import "base:runtime"
 
@@ -148,7 +147,7 @@ read_dir_recursive :: proc(path: string, allocator: runtime.Allocator) -> (files
     return
 }
 
-Init ::proc() {
+main :: proc() {
     fi, fi_err := read_dir_recursive("data", context.temp_allocator)
       if fi_err != nil {
         fmt.println("Error reading directory 'data' : ", fi_err)
@@ -164,15 +163,6 @@ Init ::proc() {
              fmt.println(" -", file.fullpath, "(", file.size, "bytes)") 
         }
     }
-}
-Destroy ::proc() {
-
-}
-
-main :: proc() {
-    engine.Init = Init
-    engine.Destroy = Destroy
-    engine.engineMain()
 }
 
 

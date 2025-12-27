@@ -1,6 +1,9 @@
 # Resource Packer
 
-리소스 파일들을 단일 데이터 파일로 패킹하는 도구입니다.
+리소스 파일들을 단일 데이터 파일로 패킹하는 도구입니다.  
+A tool for packing resource files into a single data file.
+
+---
 
 ## 사용 방법
 
@@ -58,8 +61,8 @@ file_data := data_file[offset:offset+size]
 
 ```odin
 DATA :: struct {
-  BG_opus : [2]int,
-  캐릭터 : struct {
+  test_txt : [2]int,
+  character : struct {
     walk0_png : [2]int,
     walk1_png : [2]int,
     // ...
@@ -67,29 +70,70 @@ DATA :: struct {
 }
 ```
 
-## 예제
+---
+
+### Usage
+
+#### 1. Compile
+
+Download pre-compiled binaries or compile the project to create an executable.
+
+```bash
+# Add .exe extension on Windows
+odin build resource_packer -o:speed -out:bin/resource_packer
+```
+
+#### 2. Run
+
+Execute the program in a directory containing a `data` folder. The program recursively reads all files in the `data` folder and generates the following two files:
+
+- `xfit_data.odin`: Odin source file containing metadata for resource files
+- `xfit_data.xdata`: Single file containing all resource file data
+
+#### 3. Use in Your Project
+
+After copying the generated files to your project, use them as follows:
+
+1. Load the `xfit_data.xdata` file in your project.
+2. Import the `xfit_data.odin` file:
 
 ```odin
-package main
+import "path/to/xfit_data"
+```
 
-import "core:os"
-import "xfit_data"
+3. Use the data structure:
 
-main :: proc() {
-    // 데이터 파일 로드
-    data_file := os.read_entire_file("xfit_data.xdata") or_return
-    defer delete(data_file)
+```odin
+// Load xfit_data.xdata file into memory
+data_file := os.read_entire_file("xfit_data.xdata") or_return
+defer delete(data_file)
 
-    // 특정 파일 정보 가져오기
-    bg_info := xfit_data.data.BG_opus
-    offset := bg_info[0]
-    size := bg_info[1]
+// Extract specific file data
+file_info := xfit_data.data.BG_opus  // [2]int type
+offset := file_info[0]  // Offset within xfit_data.xdata file
+size := file_info[1]    // File size
 
-    // 파일 데이터 추출
-    bg_data := data_file[offset:offset+size]
-    
-    // 추출한 데이터 사용
+// Extract actual file data
+file_data := data_file[offset:offset+size]
+```
+
+### Data Structure
+
+Each file in the `DATA` struct is defined as `[2]int` type:
+
+- **First value (`[0]`)**: Starting offset of the file data within the `xfit_data.xdata` file (in bytes)
+- **Second value (`[1]`)**: Size of the file (in bytes)
+
+Folder structure is represented as nested structs. For example:
+
+```odin
+DATA :: struct {
+  test_txt : [2]int,
+  character : struct {
+    walk0_png : [2]int,
+    walk1_png : [2]int,
     // ...
+  },
 }
 ```
 

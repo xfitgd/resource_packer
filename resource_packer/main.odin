@@ -31,14 +31,14 @@ change_name :: proc(name: string, allocator : runtime.Allocator) -> (res:string,
 }
 
 read_dir_recursive :: proc(path: string, allocator: runtime.Allocator) -> (files: []os2.File_Info, err: os2.Error) {
-    xfit_data, xfit_data_err := os2.open("xfit_data.odin", {.Read, .Write, .Create, .Trunc}, 0o777)
+    xfit_data, xfit_data_err := os2.open("xfit_data.odin", {.Read, .Write, .Create, .Trunc}, os2.Permissions_Read_Write_All)
     if xfit_data_err != nil {
         err = xfit_data_err
         return
     }
     defer os2.close(xfit_data)
 
-    xfit_datas, xfit_datas_err := os2.open("xfit_data.xdata", {.Read, .Write, .Create, .Trunc}, 0o777)
+    xfit_datas, xfit_datas_err := os2.open("xfit_data.xdata", {.Read, .Write, .Create, .Trunc}, os2.Permissions_Read_Write_All)
     if xfit_datas_err != nil {
         err = xfit_datas_err
         return

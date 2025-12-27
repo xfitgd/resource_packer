@@ -26,19 +26,20 @@ jobs:
 
       - name: Build Odin Compiler
         working-directory: Odin-GameEngine
+        shell: cmd
         run: |
           build.bat release
 
       - name: Build resource_packer
         working-directory: .
         run: |
-          Odin-GameEngine\odin.exe build resource_packer -o:speed -out:bin/resource_packer.exe
+          Odin-GameEngine\odin.exe build resource_packer -o:speed
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: resource_packer-windows
-          path: bin/resource_packer.exe
+          path: ./resource_packer.exe
 
   build-linux:
     runs-on: ubuntu-latest
@@ -68,14 +69,14 @@ jobs:
       - name: Build resource_packer
         working-directory: .
         run: |
-          Odin-GameEngine/odin build resource_packer -o:speed -out:bin/resource_packer
-          chmod +x bin/resource_packer
+          Odin-GameEngine/odin build resource_packer -o:speed
+          chmod +x ./resource_packer
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v4
         with:
           name: resource_packer-linux
-          path: bin/resource_packer
+          path: ./resource_packer
 
   build-macos:
     runs-on: macos-latest
@@ -104,14 +105,14 @@ jobs:
       - name: Build resource_packer
         working-directory: .
         run: |
-          Odin-GameEngine/odin build resource_packer -o:speed -out:bin/resource_packer
-          chmod +x bin/resource_packer
+          Odin-GameEngine/odin build resource_packer -o:speed
+          chmod +x ./resource_packer
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: resource_packer-macos
-          path: bin/resource_packer
+          path: ./resource_packer
 
   release:
     needs: [build-windows, build-linux, build-macos]

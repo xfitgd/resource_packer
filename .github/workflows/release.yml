@@ -54,8 +54,10 @@ jobs:
 
       - name: Install LLVM
         run: |
-          sudo apt-get update
-          sudo apt-get install -y llvm-17 clang-17 libclang-17-dev libstdc++-12-dev
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18
+          echo "/usr/lib/llvm-18/bin" >> $GITHUB_PATH
 
       - name: Build Odin Compiler
         working-directory: Odin-GameEngine

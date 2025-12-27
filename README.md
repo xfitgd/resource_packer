@@ -18,21 +18,18 @@ odin build resource_packer -o:speed -out:bin/resource_packer
 
 ### 2. 실행
 
-`data` 폴더가 있는 디렉토리에서 프로그램을 실행합니다. 프로그램은 `data` 폴더 내의 모든 파일을 재귀적으로 읽어서 다음 두 파일을 생성합니다:
+`data` 폴더가 있는 디렉토리에서 프로그램을 실행합니다. 프로그램은 `data` 폴더 내의 모든 파일을 재귀적으로 읽어서 다음 3 파일을 생성합니다:
 
 - `xfit_data.odin`: 리소스 파일의 메타데이터를 포함하는 Odin 소스 파일
 - `xfit_data.xdata`: 모든 리소스 파일의 데이터가 포함된 단일 파일
+- `xfit_data.h`: C에서 사용할 수 있는 헤더 파일
 
 ### 3. 프로젝트에서 사용하기
 
 생성된 파일들을 프로젝트에 복사한 후 다음과 같이 사용합니다:
 
 1. `xfit_data.xdata` 파일을 프로젝트에서 읽습니다.
-2. `xfit_data.odin` 파일을 import합니다:
-
-```odin
-import "path/to/xfit_data"
-```
+2. `xfit_data.odin` 또는 `xfit_data.h` 파일을 import/include합니다:
 
 3. 데이터 구조체를 사용합니다:
 
@@ -85,21 +82,18 @@ odin build resource_packer -o:speed -out:bin/resource_packer
 
 #### 2. Run
 
-Execute the program in a directory containing a `data` folder. The program recursively reads all files in the `data` folder and generates the following two files:
+Execute the program in a directory containing a `data` folder. The program recursively reads all files in the `data` folder and generates the following 3 files:
 
 - `xfit_data.odin`: Odin source file containing metadata for resource files
 - `xfit_data.xdata`: Single file containing all resource file data
+- `xfit_data.h`: A header file for use in C
 
 #### 3. Use in Your Project
 
 After copying the generated files to your project, use them as follows:
 
 1. Load the `xfit_data.xdata` file in your project.
-2. Import the `xfit_data.odin` file:
-
-```odin
-import "path/to/xfit_data"
-```
+2. Import/Include the `xfit_data.odin` or `xfit_data.h` file:
 
 3. Use the data structure:
 

@@ -61,8 +61,6 @@ jobs:
 
       - name: Build Odin Compiler
         working-directory: Odin-GameEngine
-        env:
-          LLVM_CONFIG: llvm-config-17
         run: |
           chmod +x build_odin.sh
           ./build_odin.sh release
@@ -92,12 +90,11 @@ jobs:
 
       - name: Install LLVM
         run: |
-          brew install llvm@17
+          brew install llvm@20
 
       - name: Build Odin Compiler
         working-directory: Odin-GameEngine
         run: |
-          export LLVM_CONFIG="$(brew --prefix llvm@17)/bin/llvm-config"
           chmod +x build_odin.sh
           ./build_odin.sh release
 

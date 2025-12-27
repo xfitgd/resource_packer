@@ -55,7 +55,7 @@ jobs:
       - name: Install LLVM
         run: |
           sudo apt-get update
-          sudo apt-get install -y llvm-17 clang-17 libclang-17-dev
+          sudo apt-get install -y llvm-17 clang-17 libclang-17-dev libstdc++-12-dev
 
       - name: Build Odin Compiler
         working-directory: Odin-GameEngine
@@ -94,9 +94,8 @@ jobs:
 
       - name: Build Odin Compiler
         working-directory: Odin-GameEngine
-        env:
-          LLVM_CONFIG: $(brew --prefix llvm@17)/bin/llvm-config
         run: |
+          export LLVM_CONFIG="$(brew --prefix llvm@17)/bin/llvm-config"
           chmod +x build_odin.sh
           ./build_odin.sh release
 

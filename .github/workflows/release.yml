@@ -58,7 +58,6 @@ jobs:
           chmod +x llvm.sh
           sudo ./llvm.sh 20
           echo "/usr/lib/llvm-20/bin" >> $GITHUB_PATH
-          sudo apt-get install -y libstdc++-14-dev
 
       - name: Build Odin Compiler
         working-directory: Odin-GameEngine

@@ -65,10 +65,11 @@ jobs:
         run: |
           chmod +x build_odin.sh
           ./build_odin.sh release
+          echo "$GITHUB_WORKSPACE/Odin-GameEngine" >> $GITHUB_PATH
 
       - name: Build resource_packer
         run: |
-          Odin-GameEngine/odin build resource_packer -o:speed
+          odin build resource_packer -o:speed
           chmod +x ./resource_packer
 
       - name: Upload Linux artifact
@@ -77,42 +78,8 @@ jobs:
           name: resource_packer-linux
           path: ./resource_packer
 
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout resource_packer
-        uses: actions/checkout@v4
-
-      - name: Checkout Odin-GameEngine
-        uses: actions/checkout@v4
-        with:
-          repository: xfitgd/Odin-GameEngine
-          path: Odin-GameEngine
-
-      - name: Install LLVM
-        run: |
-          brew install llvm@20 lld@20
-          echo "$(brew --prefix llvm@20)/bin" >> $GITHUB_PATH
-
-      - name: Build Odin Compiler
-        working-directory: Odin-GameEngine
-        run: |
-          chmod +x build_odin.sh
-          ./build_odin.sh release
-
-      - name: Build resource_packer
-        run: |
-          Odin-GameEngine/odin build resource_packer -o:speed
-          chmod +x ./resource_packer
-
-      - name: Upload macOS artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: resource_packer-macos
-          path: ./resource_packer
-
   release:
-    needs: [build-windows, build-linux, build-macos]
+    needs: [build-windows, build-linux]
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -1,0 +1,146 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout resource_packer
+        uses: actions/checkout@v4
+
+      - name: Checkout Odin-GameEngine
+        uses: actions/checkout@v4
+        with:
+          repository: xfitgd/Odin-GameEngine
+          path: Odin-GameEngine
+
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build Odin Compiler
+        working-directory: Odin-GameEngine
+        run: |
+          build.bat release
+
+      - name: Build resource_packer
+        working-directory: .
+        run: |
+          Odin-GameEngine\odin.exe build resource_packer -o:speed -out:bin/resource_packer.exe
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: resource_packer-windows
+          path: bin/resource_packer.exe
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resource_packer
+        uses: actions/checkout@v4
+
+      - name: Checkout Odin-GameEngine
+        uses: actions/checkout@v4
+        with:
+          repository: xfitgd/Odin-GameEngine
+          path: Odin-GameEngine
+
+      - name: Install LLVM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y llvm-17 clang-17 libclang-17-dev
+
+      - name: Build Odin Compiler
+        working-directory: Odin-GameEngine
+        env:
+          LLVM_CONFIG: llvm-config-17
+        run: |
+          chmod +x build_odin.sh
+          ./build_odin.sh release
+
+      - name: Build resource_packer
+        working-directory: .
+        run: |
+          Odin-GameEngine/odin build resource_packer -o:speed -out:bin/resource_packer
+          chmod +x bin/resource_packer
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: resource_packer-linux
+          path: bin/resource_packer
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout resource_packer
+        uses: actions/checkout@v4
+
+      - name: Checkout Odin-GameEngine
+        uses: actions/checkout@v4
+        with:
+          repository: xfitgd/Odin-GameEngine
+          path: Odin-GameEngine
+
+      - name: Install LLVM
+        run: |
+          brew install llvm@17
+
+      - name: Build Odin Compiler
+        working-directory: Odin-GameEngine
+        env:
+          LLVM_CONFIG: $(brew --prefix llvm@17)/bin/llvm-config
+        run: |
+          chmod +x build_odin.sh
+          ./build_odin.sh release
+
+      - name: Build resource_packer
+        working-directory: .
+        run: |
+          Odin-GameEngine/odin build resource_packer -o:speed -out:bin/resource_packer
+          chmod +x bin/resource_packer
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: resource_packer-macos
+          path: bin/resource_packer
+
+  release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release files
+        run: |
+          mkdir -p release
+          cp artifacts/resource_packer-windows/resource_packer.exe release/resource_packer-windows.exe
+          cp artifacts/resource_packer-linux/resource_packer release/resource_packer-linux
+          cp artifacts/resource_packer-macos/resource_packer release/resource_packer-macos
+          chmod +x release/resource_packer-linux release/resource_packer-macos
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          files: |
+            release/resource_packer-windows.exe
+            release/resource_packer-linux
+            release/resource_packer-macos
+          draft: false
+          prerelease: false
+

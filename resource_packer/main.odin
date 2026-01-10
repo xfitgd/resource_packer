@@ -196,11 +196,6 @@ read_dir_recursive :: proc(path: string, allocator: runtime.Allocator) -> (files
                 offset^ += int(fi.size)
 
                 strings.write_string(c_header, c_str)
-
-                dataFile := os2.read_entire_file_from_path(fi.fullpath, context.temp_allocator) or_return
-                defer delete(dataFile, context.temp_allocator)
-
-                os2.write(xfit_datas, dataFile) or_return
             }
         }
         _ = os2.read_directory_iterator_error(&it) or_return
